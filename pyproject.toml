@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "watch-intents"
+version = "0.1.0"
+description = "Auditable synthetic multilingual watch-command datasets"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "filelock>=3.18,<5",
+  "httpx>=0.28,<0.29",
+  "pydantic>=2.11,<3",
+  "python-dotenv>=1.1,<2",
+  "tokenizers>=0.21,<0.23",
+  "rapidfuzz>=3.13,<4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<10", "ruff>=0.11,<1"]
+
+[project.scripts]
+watch-intents = "watch_intents.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/watch_intents"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100

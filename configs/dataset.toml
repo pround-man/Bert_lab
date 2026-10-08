@@ -1,0 +1,30 @@
+# Sizes are FINAL accepted records per locale, not generation attempts.
+version = "0.1"
+seed = 42
+locales = ["en", "zh-Hans", "th"]
+pilot_per_locale = 100
+batch_size = 10
+max_tokens = 512
+# Used only by build --bounded; default build continues until quotas are full.
+semantic_retries = 2
+near_duplicate_threshold = 0.90
+
+[paths]
+output_dir = "data/generated"
+model_dir = "models/xlm-roberta-base"
+
+[split_sizes]
+train = 3000
+validation = 500
+test = 1000
+
+# Percent of zero-label records. Chitchat is 10% of the complete dataset.
+[zero_scenario_weights]
+chitchat = 50
+negation = 10
+withdrawal = 10
+quoted = 8
+past = 6
+howto = 6
+unclear = 5
+unsupported_parameter = 5

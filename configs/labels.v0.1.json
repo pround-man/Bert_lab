@@ -1,0 +1,268 @@
+{
+  "version": "0.1",
+  "rules": [
+    "Return the set of currently effective, explicitly requested supported actions in the complete utterance. Sort by fixed label ID and deduplicate repetitions. With no supported request, return an empty array []. Never add OTHER.",
+    "Page labels open a page or show its default existing information. They do not start recording a workout, measure heart rate, create an alarm, start a countdown, start a stopwatch, start navigation, or play music.",
+    "Do not discard explicit time, place, route, activity, song, or other execution parameters to force an unsupported request into a supported page label. A separate explicit request to open the page is still supported.",
+    "A prohibition such as 'do not turn on Bluetooth' does not imply the inverse action CLOSE_BLUETOOTH. Mentioned, quoted, hypothetical, conditional-on-an-unmet-event, or past actions are not present commands.",
+    "Resolve cancellation and self-correction by their explicit scope. 'Open Bluetooth; forget it' is []; 'Open Bluetooth; no, turn it off' is [CLOSE_BLUETOOTH]. A scoped withdrawal only removes the withdrawn request.",
+    "A clear sequence such as 'turn Bluetooth on, then turn it off' requests both action types. Keep both labels; this classifier does not encode sequence, arguments, or executability.",
+    "Requests for explanations, recommendations, how-to instructions, feature capabilities, or on/off status do not execute operations and receive no corresponding action label.",
+    "Unspecified references such as 'open that' without resolving context receive []. Do not invent missing objects or rely on previous conversation turns.",
+    "For mixed supported and unsupported requests, keep all and only the supported requests. For example, 'Open Bluetooth and set an alarm for seven' is [OPEN_BLUETOOTH].",
+    "Polite interrogative forms that actually request an operation, such as 'Could you turn on Bluetooth?', are supported commands. Distinguish them from explanatory and status questions.",
+    "Examples marked negative have no labels as standalone utterances. They define boundaries, not phrases that must be copied. Generate natural native English, Simplified Chinese, or Thai."
+  ],
+  "labels": [
+    {
+      "id": 0, "name": "OPEN_SPORT", "description": "Open the sport/workout mode selection page.",
+      "include": ["Open the list of sports or workout modes without selecting or starting one."],
+      "exclude": ["Start, pause, resume, or finish workout recording.", "Select a named sport such as running or cycling; report workout metrics."],
+      "examples": {
+        "en": {"positive": "Open the workout mode list, please.", "negative": "Start recording a run."},
+        "zh-Hans": {"positive": "打开运动模式选择页。", "negative": "开始记录跑步。"},
+        "th": {"positive": "เปิดรายการโหมดออกกำลังกายให้หน่อย", "negative": "เริ่มบันทึกการวิ่งให้หน่อย"}
+      }
+    },
+    {
+      "id": 1, "name": "OPEN_SETTINGS", "description": "Open the general watch settings page.",
+      "include": ["Open general settings without requesting a particular unsupported setting."],
+      "exclude": ["Change brightness, volume, language, units, or another setting.", "Ask how to change a setting."],
+      "examples": {
+        "en": {"positive": "Take me to settings.", "negative": "Set the screen brightness to fifty percent."},
+        "zh-Hans": {"positive": "进入手表设置。", "negative": "把屏幕亮度调到百分之五十。"},
+        "th": {"positive": "เปิดหน้าการตั้งค่านาฬิกา", "negative": "ปรับความสว่างหน้าจอเป็นห้าสิบเปอร์เซ็นต์"}
+      }
+    },
+    {
+      "id": 2, "name": "OPEN_HEART_RATE", "description": "Open the heart-rate page to view existing default information; do not initiate a measurement.",
+      "include": ["Open or show the heart-rate page.", "View heart-rate information without explicitly requesting a new measurement."],
+      "exclude": ["Measure heart rate now or initiate a health measurement.", "Explain heart rate, interpret health data, or set an alert threshold."],
+      "examples": {
+        "en": {"positive": "Show me the heart-rate page.", "negative": "Measure my heart rate now."},
+        "zh-Hans": {"positive": "打开心率页面给我看看。", "negative": "现在测一下我的心率。"},
+        "th": {"positive": "เปิดหน้าอัตราการเต้นของหัวใจให้ดูหน่อย", "negative": "วัดอัตราการเต้นของหัวใจตอนนี้เลย"}
+      }
+    },
+    {
+      "id": 3, "name": "OPEN_SLEEP", "description": "Open the sleep records page with its default existing information.",
+      "include": ["Open or view sleep records without requesting a particular date or analysis."],
+      "exclude": ["Start sleep tracking or change sleep settings.", "Query a named day, interpret sleep quality, or ask for sleep advice."],
+      "examples": {
+        "en": {"positive": "Open my sleep records.", "negative": "How can I improve my sleep?"},
+        "zh-Hans": {"positive": "让我看看睡眠记录。", "negative": "怎么改善我的睡眠质量？"},
+        "th": {"positive": "เปิดบันทึกการนอนหลับให้ดูหน่อย", "negative": "ทำอย่างไรถึงจะนอนหลับได้ดีขึ้น"}
+      }
+    },
+    {
+      "id": 4, "name": "OPEN_ACTIVITY", "description": "Open the default daily activity overview page.",
+      "include": ["Open daily activity, activity overview, or the default steps/activity page."],
+      "exclude": ["Change step or calorie goals, start a workout, or query a particular historical day."],
+      "examples": {
+        "en": {"positive": "Show my daily activity page.", "negative": "Set my daily step goal to ten thousand."},
+        "zh-Hans": {"positive": "打开每日活动页面。", "negative": "把每天的步数目标设成一万步。"},
+        "th": {"positive": "เปิดหน้ากิจกรรมประจำวัน", "negative": "ตั้งเป้าหมายจำนวนก้าวต่อวันเป็นหนึ่งหมื่นก้าว"}
+      }
+    },
+    {
+      "id": 5, "name": "OPEN_WORKOUT_HISTORY", "description": "Open the list of previously recorded workouts.",
+      "include": ["Open workout history or the exercise record list without selecting a record."],
+      "exclude": ["Start recording, delete a record, select a named workout, or analyze a specific session."],
+      "examples": {
+        "en": {"positive": "Open my workout history.", "negative": "Delete yesterday's run."},
+        "zh-Hans": {"positive": "打开运动历史记录列表。", "negative": "删除昨天的跑步记录。"},
+        "th": {"positive": "เปิดประวัติการออกกำลังกาย", "negative": "ลบบันทึกการวิ่งของเมื่อวาน"}
+      }
+    },
+    {
+      "id": 6, "name": "OPEN_WEATHER", "description": "Open the default weather page.",
+      "include": ["Open the weather page or show default weather information without date/place arguments."],
+      "exclude": ["Request a forecast for a specified location or time.", "Ask weather-related advice or explain weather information."],
+      "examples": {
+        "en": {"positive": "Open the weather page.", "negative": "What will the weather be in Bangkok tomorrow?"},
+        "zh-Hans": {"positive": "打开天气页面。", "negative": "曼谷明天天气怎么样？"},
+        "th": {"positive": "เปิดหน้าสภาพอากาศให้หน่อย", "negative": "พรุ่งนี้อากาศที่กรุงเทพฯ จะเป็นอย่างไร"}
+      }
+    },
+    {
+      "id": 7, "name": "OPEN_COMPASS", "description": "Open the compass application/page.",
+      "include": ["Open or show the compass."],
+      "exclude": ["Calibrate the compass, set a bearing, or ask how a compass works."],
+      "examples": {
+        "en": {"positive": "Bring up the compass.", "negative": "How does the compass work?"},
+        "zh-Hans": {"positive": "打开指南针。", "negative": "指南针怎么工作的？"},
+        "th": {"positive": "เปิดเข็มทิศให้หน่อย", "negative": "เข็มทิศทำงานอย่างไร"}
+      }
+    },
+    {
+      "id": 8, "name": "OPEN_NAVIGATION", "description": "Open the navigation entry page without selecting a route or destination.",
+      "include": ["Open the navigation menu or entry page."],
+      "exclude": ["Start/end navigation, navigate to a destination, select a route, or return to start."],
+      "examples": {
+        "en": {"positive": "Open the navigation menu.", "negative": "Navigate me home."},
+        "zh-Hans": {"positive": "打开导航入口。", "negative": "导航回家。"},
+        "th": {"positive": "เปิดเมนูการนำทาง", "negative": "นำทางกลับบ้านให้หน่อย"}
+      }
+    },
+    {
+      "id": 9, "name": "OPEN_TIMER", "description": "Open the countdown timer page without starting or configuring a countdown.",
+      "include": ["Open the countdown/timer page."],
+      "exclude": ["Start a timer, set its duration, stop/reset a countdown, or ask remaining time."],
+      "examples": {
+        "en": {"positive": "Open the countdown timer page.", "negative": "Start a five-minute timer."},
+        "zh-Hans": {"positive": "打开倒计时页面。", "negative": "开始五分钟倒计时。"},
+        "th": {"positive": "เปิดหน้าตัวนับเวลาถอยหลัง", "negative": "เริ่มนับเวลาถอยหลังห้านาที"}
+      }
+    },
+    {
+      "id": 10, "name": "OPEN_STOPWATCH", "description": "Open the stopwatch page without starting or changing timing.",
+      "include": ["Open or show the stopwatch page."],
+      "exclude": ["Start, stop, reset, resume, or record a lap on the stopwatch."],
+      "examples": {
+        "en": {"positive": "Show the stopwatch page.", "negative": "Start the stopwatch now."},
+        "zh-Hans": {"positive": "打开秒表页面。", "negative": "现在开始用秒表计时。"},
+        "th": {"positive": "เปิดหน้านาฬิกาจับเวลา", "negative": "เริ่มจับเวลาตอนนี้เลย"}
+      }
+    },
+    {
+      "id": 11, "name": "OPEN_ALARM", "description": "Open the alarm list page without creating, enabling, or changing an alarm.",
+      "include": ["Open the alarm page or list of alarms."],
+      "exclude": ["Set a timed alarm, toggle a particular alarm, delete an alarm, or snooze."],
+      "examples": {
+        "en": {"positive": "Open the alarm list.", "negative": "Set an alarm for seven in the morning."},
+        "zh-Hans": {"positive": "打开闹钟列表。", "negative": "设置早上七点的闹钟。"},
+        "th": {"positive": "เปิดรายการนาฬิกาปลุก", "negative": "ตั้งนาฬิกาปลุกตอนเจ็ดโมงเช้า"}
+      }
+    },
+    {
+      "id": 12, "name": "OPEN_MUSIC", "description": "Open the music control page without starting playback.",
+      "include": ["Open the music controls or music control page."],
+      "exclude": ["Play/pause music, select a track, skip tracks, or change volume."],
+      "examples": {
+        "en": {"positive": "Open the music controls.", "negative": "Play some music."},
+        "zh-Hans": {"positive": "打开音乐控制页面。", "negative": "播放音乐。"},
+        "th": {"positive": "เปิดหน้าควบคุมเพลง", "negative": "เล่นเพลงให้ฟังหน่อย"}
+      }
+    },
+    {
+      "id": 13, "name": "OPEN_BLUETOOTH", "description": "Turn Bluetooth on. OPEN here means enable the switch, not visit a settings page.",
+      "include": ["Enable or switch on the watch's Bluetooth radio."],
+      "exclude": ["Open Bluetooth settings only, pair a device, connect a named device, or ask Bluetooth status.", "A prohibition against turning Bluetooth off does not imply this label."],
+      "examples": {
+        "en": {"positive": "Turn on Bluetooth, please.", "negative": "Is Bluetooth on?"},
+        "zh-Hans": {"positive": "把蓝牙打开。", "negative": "蓝牙现在开着吗？"},
+        "th": {"positive": "เปิดบลูทูธให้หน่อย", "negative": "ตอนนี้บลูทูธเปิดอยู่ไหม"}
+      }
+    },
+    {
+      "id": 14, "name": "CLOSE_BLUETOOTH", "description": "Turn Bluetooth off.",
+      "include": ["Disable or switch off the watch's Bluetooth radio."],
+      "exclude": ["Disconnect/unpair a named device without explicitly turning Bluetooth off.", "Do not turn Bluetooth on; ask how to turn it off."],
+      "examples": {
+        "en": {"positive": "Switch Bluetooth off.", "negative": "Don't turn Bluetooth on."},
+        "zh-Hans": {"positive": "关闭蓝牙。", "negative": "不要打开蓝牙。"},
+        "th": {"positive": "ปิดบลูทูธ", "negative": "อย่าเปิดบลูทูธ"}
+      }
+    },
+    {
+      "id": 15, "name": "OPEN_FLASHLIGHT", "description": "Turn the watch flashlight on.",
+      "include": ["Enable or switch on the watch flashlight."],
+      "exclude": ["Adjust screen brightness, change flashlight color/intensity, or ask flashlight instructions."],
+      "examples": {
+        "en": {"positive": "Turn on the flashlight.", "negative": "How do I use the flashlight?"},
+        "zh-Hans": {"positive": "打开手电筒。", "negative": "手电筒怎么用？"},
+        "th": {"positive": "เปิดไฟฉาย", "negative": "ใช้ไฟฉายอย่างไร"}
+      }
+    },
+    {
+      "id": 16, "name": "CLOSE_FLASHLIGHT", "description": "Turn the watch flashlight off.",
+      "include": ["Disable or switch off the watch flashlight."],
+      "exclude": ["Turn off the display or reduce brightness.", "A prohibition against enabling the flashlight is not a disable request."],
+      "examples": {
+        "en": {"positive": "Switch off the flashlight.", "negative": "Don't turn on the flashlight."},
+        "zh-Hans": {"positive": "把手电筒关掉。", "negative": "别打开手电筒。"},
+        "th": {"positive": "ปิดไฟฉายให้หน่อย", "negative": "อย่าเปิดไฟฉาย"}
+      }
+    },
+    {
+      "id": 17, "name": "ENABLE_DO_NOT_DISTURB", "description": "Enable Do Not Disturb mode immediately, with no schedule or duration.",
+      "include": ["Turn on Do Not Disturb/DND mode."],
+      "exclude": ["Schedule DND, set a duration, silence a specific alert, or merely discuss interruptions."],
+      "examples": {
+        "en": {"positive": "Turn on Do Not Disturb.", "negative": "Schedule Do Not Disturb for ten tonight."},
+        "zh-Hans": {"positive": "开启勿扰模式。", "negative": "把勿扰模式设成今晚十点开启。"},
+        "th": {"positive": "เปิดโหมดห้ามรบกวน", "negative": "ตั้งเวลาเปิดโหมดห้ามรบกวนตอนสี่ทุ่มคืนนี้"}
+      }
+    },
+    {
+      "id": 18, "name": "DISABLE_DO_NOT_DISTURB", "description": "Disable Do Not Disturb mode immediately.",
+      "include": ["Turn off Do Not Disturb/DND mode."],
+      "exclude": ["Ask whether DND is off or prohibit enabling it.", "Change notification preferences without explicitly disabling DND."],
+      "examples": {
+        "en": {"positive": "Turn off Do Not Disturb.", "negative": "Is Do Not Disturb disabled?"},
+        "zh-Hans": {"positive": "关闭勿扰模式。", "negative": "勿扰模式关了吗？"},
+        "th": {"positive": "ปิดโหมดห้ามรบกวน", "negative": "โหมดห้ามรบกวนปิดอยู่หรือเปล่า"}
+      }
+    },
+    {
+      "id": 19, "name": "ENABLE_BATTERY_SAVER", "description": "Enable the watch's general battery saver mode.",
+      "include": ["Turn on battery saver/power saving mode without additional parameters."],
+      "exclude": ["Select a sport battery profile, schedule a battery threshold, or ask battery-saving advice."],
+      "examples": {
+        "en": {"positive": "Enable battery saver.", "negative": "How can I make the battery last longer?"},
+        "zh-Hans": {"positive": "开启省电模式。", "negative": "怎么让电池更耐用？"},
+        "th": {"positive": "เปิดโหมดประหยัดพลังงาน", "negative": "ทำอย่างไรให้แบตเตอรี่ใช้งานได้นานขึ้น"}
+      }
+    },
+    {
+      "id": 20, "name": "DISABLE_BATTERY_SAVER", "description": "Disable the watch's general battery saver mode.",
+      "include": ["Turn off battery saver/power saving mode."],
+      "exclude": ["Ask battery saver status or prohibit enabling it.", "Change a workout-specific battery profile."],
+      "examples": {
+        "en": {"positive": "Disable battery saver.", "negative": "Don't enable battery saver."},
+        "zh-Hans": {"positive": "关闭省电模式。", "negative": "不要开启省电模式。"},
+        "th": {"positive": "ปิดโหมดประหยัดพลังงาน", "negative": "อย่าเปิดโหมดประหยัดพลังงาน"}
+      }
+    },
+    {
+      "id": 21, "name": "ENABLE_ALWAYS_ON_DISPLAY", "description": "Enable the Always-On Display setting.",
+      "include": ["Turn on always-on display or explicitly request the screen remain always visible."],
+      "exclude": ["Wake the screen temporarily, change brightness/timeout, or enable AOD for a specified duration."],
+      "examples": {
+        "en": {"positive": "Enable the always-on display.", "negative": "Set the screen timeout to thirty seconds."},
+        "zh-Hans": {"positive": "开启屏幕常亮显示。", "negative": "把息屏时间设成三十秒。"},
+        "th": {"positive": "เปิดโหมดแสดงหน้าจอตลอดเวลา", "negative": "ตั้งเวลาปิดหน้าจอเป็นสามสิบวินาที"}
+      }
+    },
+    {
+      "id": 22, "name": "DISABLE_ALWAYS_ON_DISPLAY", "description": "Disable the Always-On Display setting.",
+      "include": ["Turn off always-on display."],
+      "exclude": ["Switch the screen off once, lock touch input, or prohibit enabling always-on display."],
+      "examples": {
+        "en": {"positive": "Turn off the always-on display.", "negative": "Don't enable the always-on display."},
+        "zh-Hans": {"positive": "关闭常亮显示。", "negative": "别开启常亮显示。"},
+        "th": {"positive": "ปิดโหมดแสดงหน้าจอตลอดเวลา", "negative": "อย่าเปิดโหมดแสดงหน้าจอตลอดเวลา"}
+      }
+    },
+    {
+      "id": 23, "name": "LOCK_SCREEN", "description": "Lock the watch's touch screen input to prevent accidental touches.",
+      "include": ["Lock the screen or disable touch input immediately."],
+      "exclude": ["Unlock the screen, turn off the display, set a passcode, or ask whether it is locked.", "Enable a water mode if that includes additional unspecified behavior."],
+      "examples": {
+        "en": {"positive": "Lock the touch screen.", "negative": "Unlock the touch screen."},
+        "zh-Hans": {"positive": "锁定屏幕触控。", "negative": "解锁屏幕。"},
+        "th": {"positive": "ล็อกหน้าจอสัมผัส", "negative": "ปลดล็อกหน้าจอสัมผัส"}
+      }
+    },
+    {
+      "id": 24, "name": "FIND_PHONE", "description": "Activate Find Phone for the already paired phone.",
+      "include": ["Find my phone or make the paired phone ring for locating it."],
+      "exclude": ["Call a person, pair a new phone, track another person's phone, or merely narrate losing a phone."],
+      "examples": {
+        "en": {"positive": "Help me find my phone.", "negative": "Call my mother."},
+        "zh-Hans": {"positive": "帮我找一下手机。", "negative": "给妈妈打电话。"},
+        "th": {"positive": "ช่วยค้นหาโทรศัพท์ของฉันหน่อย", "negative": "โทรหาแม่ให้หน่อย"}
+      }
+    }
+  ]
+}
