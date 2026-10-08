@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "watch-intents-training"
+version = "0.1.0"
+description = "Offline, reproducible XLM-R multilabel training and evaluation"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "transformers==4.49.0",
+  "tokenizers==0.21.4",
+  "numpy==2.2.6",
+  "safetensors==0.5.3",
+  "sentencepiece==0.2.0",
+]
+
+[project.optional-dependencies]
+cpu = ["torch==2.5.1"]
+cuda = ["torch==2.5.1"]
+dev = ["pytest>=8.3,<10", "ruff>=0.11,<1"]
+
+[project.scripts]
+watch-intents-train = "watch_intents_training.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/watch_intents_training"]
+
+[tool.uv]
+conflicts = [[{ extra = "cpu" }, { extra = "cuda" }]]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cpu", extra = "cpu" },
+  { index = "pytorch-cu124", extra = "cuda" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100

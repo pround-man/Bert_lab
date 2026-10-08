@@ -1,0 +1,18 @@
+# Paths are resolved relative to this configuration file, not the shell cwd.
+data_dir = "../../data/generated/dataset/exports/full"
+model_dir = "../../models/xlm-roberta-base"
+output_dir = "../../outputs/training"
+max_length = 128
+micro_batch = 16
+gradient_accumulation = 2
+eval_batch = 32
+learning_rate = 0.00002
+weight_decay = 0.01
+max_grad_norm = 1.0
+epochs = 5
+patience = 2
+warmup_ratio = 0.1
+seed = 42
+precision = "auto"
+device = "auto"
+num_workers = 0
